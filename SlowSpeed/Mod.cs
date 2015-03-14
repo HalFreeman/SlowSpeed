@@ -41,7 +41,7 @@ namespace SlowSpeed
 				switch (i.m_vehicleType)
 				{
 					case VehicleInfo.VehicleType.Car:
-						i.m_maxSpeed *= 0.35f;
+						i.m_maxSpeed *= 0.6f;
 						i.m_leanMultiplier *= 0.5f;
 						i.m_acceleration *= 0.25f;
 						i.m_braking *= 0.25f;
