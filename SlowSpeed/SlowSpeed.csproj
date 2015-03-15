@@ -47,8 +47,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>mkdir "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\SlowSpeed\"
-copy "$(SolutionDir)SlowSpeed\bin\Debug\SlowSpeed.dll" "%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\SlowSpeed\"</PostBuildEvent>
+    <PostBuildEvent>set MODDIR=%25LOCALAPPDATA%25\Colossal Order\Cities_Skylines\Addons\Mods\$(ProjectName)
+mkdir "%25MODDIR%25"
+mkdir "%25MODDIR%25\Source"
+del "%25MODDIR%25\$(TargetFileName)"
+copy "$(TargetPath)" "%25MODDIR%25\$(TargetFileName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
