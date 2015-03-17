@@ -35,8 +35,8 @@ namespace SlowSpeed
 
 	public class LoadingExtension : LoadingExtensionBase
 	{
-		readonly Dictionary<string, SlowVehicleInfo> vehicles = new Dictionary<string, SlowVehicleInfo>();
-		readonly Dictionary<string, SlowCitizenInfo> citizens = new Dictionary<string, SlowCitizenInfo>();
+		readonly List<SlowVehicleInfo> vehicles = new List<SlowVehicleInfo>();
+		readonly List<SlowCitizenInfo> citizens = new List<SlowCitizenInfo>();
 
 		public override void OnLevelLoaded(LoadMode mode)
 		{
@@ -47,7 +47,7 @@ namespace SlowSpeed
 					case VehicleInfo.VehicleType.Car:
 						{
 							var v = new SlowVehicleInfo(i);
-							vehicles.Add(i.ToString(), v);
+							vehicles.Add(v);
 							v.Apply(0.6f, 0.5f, 0.25f, 0.25f, 0.25f);
 						}
 						break;
@@ -55,7 +55,7 @@ namespace SlowSpeed
 					case VehicleInfo.VehicleType.Train:
 						{
 							var v = new SlowVehicleInfo(i);
-							vehicles.Add(i.ToString(), v);
+							vehicles.Add(v);
 							v.Apply(0.5f);
 						}
 						break;
@@ -64,17 +64,17 @@ namespace SlowSpeed
 			ForEachPrefab((CitizenInfo i) =>
 			{
 				var c = new SlowCitizenInfo(i);
-				citizens.Add(i.ToString(), c);
+				citizens.Add(c);
 				c.Apply(0.25f);
 			});
 		}
 
 		public override void OnLevelUnloading()
 		{
-			foreach (var v in vehicles.Values)
+			foreach (var v in vehicles)
 				v.Restore();
 			vehicles.Clear();
-			foreach (var c in citizens.Values)
+			foreach (var c in citizens)
 				c.Restore();
 			citizens.Clear();
 		}
