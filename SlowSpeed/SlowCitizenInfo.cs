@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-using System;
-using System.Collections.Generic;
-using ICities;
-
 namespace SlowSpeed
 {
-	public class Mod : IUserMod
+	class SlowCitizenInfo
 	{
-		public string Description
+		readonly CitizenInfo i;
+		public readonly float BaseWalkSpeed;
+
+		public SlowCitizenInfo(CitizenInfo i)
 		{
-			get { return "Slows down vehicles and pedestrians"; }
+			this.i = i;
+			BaseWalkSpeed = i.m_walkSpeed;
 		}
 
-		public string Name
+		public void Apply(float walkSpeedMultiplier)
 		{
-			get { return "Slow Speed"; }
+			i.m_walkSpeed = BaseWalkSpeed * walkSpeedMultiplier;
+		}
+
+		public void Restore()
+		{
+			i.m_walkSpeed = BaseWalkSpeed;
 		}
 	}
 }

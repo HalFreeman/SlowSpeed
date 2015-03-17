@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-using System;
-using System.Collections.Generic;
-using ICities;
-
 namespace SlowSpeed
 {
-	public class Mod : IUserMod
+	interface IVehicleAIReplacement<in TOldAI>
 	{
-		public string Description
-		{
-			get { return "Slows down vehicles and pedestrians"; }
-		}
-
-		public string Name
-		{
-			get { return "Slow Speed"; }
-		}
+		void ReplaceVehicleAI(VehicleInfo i, TOldAI oldAI);
 	}
 }
