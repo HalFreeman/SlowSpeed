@@ -36,5 +36,19 @@ namespace SlowSpeed
 			}
 			return Mathf.Min(base.CalculateTargetSpeed(vehicleID, ref data, speedLimit * 2, curve * 0.5f), m_info.m_maxSpeed * 2);
 		}
+
+		// HACK
+		public override void SimulationStep(ushort vehicleID, ref Vehicle vehicleData, ref Vehicle.Frame frameData, ushort leaderID,
+			ref Vehicle leaderData, int lodPhysics)
+		{
+			var baseAcceleration = m_info.m_acceleration;
+
+			if ((vehicleData.m_flags & Vehicle.Flags.Emergency2) == Vehicle.Flags.Emergency2)
+				m_info.m_acceleration *= 3;
+
+			base.SimulationStep(vehicleID, ref vehicleData, ref frameData, leaderID, ref leaderData, lodPhysics);
+
+			m_info.m_acceleration = baseAcceleration;
+		}
 	}
 }
