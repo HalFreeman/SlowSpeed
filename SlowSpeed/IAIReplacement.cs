@@ -16,8 +16,8 @@
 
 namespace SlowSpeed
 {
-	interface IVehicleAIReplacement<in TOldAI>
+	interface IAIReplacement<in T>
 	{
-		void ReplaceVehicleAI(VehicleInfo i, TOldAI oldAI);
+		void CopyFrom(T ai);
 	}
 }

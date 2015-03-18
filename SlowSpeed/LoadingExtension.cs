@@ -30,9 +30,10 @@ namespace SlowSpeed
 		{
 			ForEachPrefab((VehicleInfo i) =>
 			{
-				ReplaceVehicleAI<PoliceCarAI, FastPoliceCarVehicleAI>(i);
-				ReplaceVehicleAI<FireTruckAI, FastFireTruckVehicleAI>(i);
-				ReplaceVehicleAI<AmbulanceAI, FastAmbulanceVehicleAI>(i);
+				ReplaceVehicleAI<PoliceCarAI, FastPoliceCarAI>(i);
+				ReplaceVehicleAI<FireTruckAI, FastFireTruckAI>(i);
+				ReplaceVehicleAI<AmbulanceAI, FastAmbulanceAI>(i);
+
 				switch (i.m_vehicleType)
 				{
 					case VehicleInfo.VehicleType.Car:
@@ -70,21 +71,27 @@ namespace SlowSpeed
 			citizens.Clear();
 		}
 
-		static void ReplaceVehicleAI<TOldAI, TNewAI>(VehicleInfo i) where TOldAI : VehicleAI where TNewAI : VehicleAI, IVehicleAIReplacement<TOldAI>, new()
+		static void ReplaceVehicleAI<TOldAI, TNewAI>(VehicleInfo i)
+			where TOldAI : VehicleAI
+			where TNewAI : VehicleAI, IAIReplacement<TOldAI>, new()
 		{
-			var oldAI = i.GetComponent<TOldAI>();
+			var oldAI = i.gameObject.GetComponent<TOldAI>();
 			if (oldAI == null)
 				return;
-			var newAI = i.gameObject.AddComponent<TNewAI>();
-			newAI.ReplaceVehicleAI(i, oldAI);
+
+			i.gameObject.AddComponent<TNewAI>(); // These lines are silly
+			var newAI = i.gameObject.GetComponent<TNewAI>();
+
+			newAI.CopyFrom(oldAI);
+			i.m_vehicleAI = newAI;
 			UObject.Destroy(oldAI);
 			newAI.InitializeAI();
 		}
 
 		static void ForEachPrefab<T>(Action<T> f) where T : PrefabInfo
 		{
-			for (var i = 0u; i < PrefabCollection<T>.PrefabCount(); i++)
-				f(PrefabCollection<T>.GetPrefab(i));
+			for (var i = 0u; i < PrefabCollection<T>.LoadedCount(); i++)
+				f(PrefabCollection<T>.GetLoaded(i));
 		}
 	}
 }

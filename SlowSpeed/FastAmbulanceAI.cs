@@ -18,14 +18,13 @@ using UnityEngine;
 
 namespace SlowSpeed
 {
-	class FastAmbulanceVehicleAI : AmbulanceAI, IVehicleAIReplacement<AmbulanceAI>
+	class FastAmbulanceAI : AmbulanceAI, IAIReplacement<AmbulanceAI>
 	{
-		public void ReplaceVehicleAI(VehicleInfo i, AmbulanceAI oldAI)
+		public void CopyFrom(AmbulanceAI ai)
 		{
-			m_paramedicCount = oldAI.m_paramedicCount;
-			m_patientCapacity = oldAI.m_patientCapacity;
-			m_info = oldAI.m_info;
-			i.m_vehicleAI = this;
+			m_paramedicCount = ai.m_paramedicCount;
+			m_patientCapacity = ai.m_patientCapacity;
+			m_info = ai.m_info;
 		}
 
 		protected override float CalculateTargetSpeed(ushort vehicleID, ref Vehicle data, float speedLimit, float curve)
