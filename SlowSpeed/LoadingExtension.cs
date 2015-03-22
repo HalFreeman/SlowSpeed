@@ -28,6 +28,9 @@ namespace SlowSpeed
 
 		public override void OnLevelLoaded(LoadMode mode)
 		{
+			if (mode != LoadMode.NewGame && mode != LoadMode.LoadGame)
+				return;
+
 			ForEachPrefab((VehicleInfo i) =>
 			{
 				ReplaceVehicleAI<PoliceCarAI, FastPoliceCarAI>(i);
