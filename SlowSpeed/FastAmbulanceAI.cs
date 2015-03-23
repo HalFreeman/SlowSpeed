@@ -30,9 +30,8 @@ namespace SlowSpeed
 		protected override float CalculateTargetSpeed(ushort vehicleID, ref Vehicle data, float speedLimit, float curve)
 		{
 			if ((data.m_flags & Vehicle.Flags.Emergency2) == Vehicle.Flags.None)
-			{
 				return base.CalculateTargetSpeed(vehicleID, ref data, speedLimit, curve);
-			}
+
 			return Mathf.Min(base.CalculateTargetSpeed(vehicleID, ref data, speedLimit * 2, curve * 0.5f), m_info.m_maxSpeed * 2);
 		}
 
