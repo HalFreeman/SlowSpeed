@@ -16,6 +16,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using ICities;
 using UObject = UnityEngine.Object;
 
@@ -75,23 +77,67 @@ namespace SlowSpeed
 			foreach (var c in citizens)
 				c.Restore();
 			citizens.Clear();
+
+			ForEachPrefab((VehicleInfo i) =>
+			{
+				ReplaceVehicleAI<FastPoliceCarAI, PoliceCarAI>(i);
+				ReplaceVehicleAI<FastFireTruckAI, FireTruckAI>(i);
+				ReplaceVehicleAI<FastAmbulanceAI, AmbulanceAI>(i);
+			});
 		}
 
 		static void ReplaceVehicleAI<TOldAI, TNewAI>(VehicleInfo i)
-			where TOldAI : VehicleAI
-			where TNewAI : VehicleAI, IAIReplacement<TOldAI>, new()
+			where TOldAI : VehicleAI where TNewAI : VehicleAI
 		{
+			// Requires the object to have the old AI
 			var oldAI = i.gameObject.GetComponent<TOldAI>();
-			if (oldAI == null)
+			if (oldAI == null || oldAI.GetType() != typeof(TOldAI))
 				return;
 
-			i.gameObject.AddComponent<TNewAI>(); // These lines are silly
+			// Requires the object to not already have the new AI
 			var newAI = i.gameObject.GetComponent<TNewAI>();
+			if (newAI != null && newAI.GetType() == typeof(TNewAI))
+			{
+				CODebug.Log(LogChannel.Modding, string.Format("SlowSpeed: {0} already has {1}", i.name, typeof(TNewAI)));
+				return;
+			}
 
-			newAI.CopyFrom(oldAI);
+			CODebug.Log(LogChannel.Modding, string.Format("SlowSpeed: Replacing {0}'s {1} with {2}",
+				i.name, typeof(TOldAI), typeof(TNewAI)));
+
+			newAI = i.gameObject.AddComponent<TNewAI>();
+
+			ShallowCopyTo(oldAI, newAI);
+
+			oldAI.ReleaseAI();
 			i.m_vehicleAI = newAI;
 			UObject.Destroy(oldAI);
 			newAI.InitializeAI();
+		}
+
+		static void ShallowCopyTo(object src, object dst)
+		{
+			var srcFields = GetFields(src);
+			var dstFields = GetFields(dst);
+			foreach (var srcField in srcFields)
+			{
+				FieldInfo dstField;
+
+				if (!dstFields.TryGetValue(srcField.Key, out dstField))
+					continue;
+
+				CODebug.Log(LogChannel.Modding, string.Format("SlowSpeed: Setting {0} to {1} ({2} to {3})",
+					dstField.Name, srcField.Value.GetValue(src), src.GetType(), dst.GetType()));
+
+				dstField.SetValue(dst, srcField.Value.GetValue(src));
+			}
+		}
+
+		static Dictionary<string, FieldInfo> GetFields(object obj)
+		{
+			return obj.GetType()
+				.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
+				.ToDictionary(f => f.Name, f => f);
 		}
 
 		static void ForEachPrefab<T>(Action<T> f) where T : PrefabInfo

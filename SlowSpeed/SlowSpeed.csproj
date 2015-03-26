@@ -34,7 +34,6 @@
     <Compile Include="FastAmbulanceAI.cs" />
     <Compile Include="FastFireTruckAI.cs" />
     <Compile Include="FastPoliceCarAI.cs" />
-    <Compile Include="IAIReplacement.cs" />
     <Compile Include="LoadingExtension.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
