@@ -33,10 +33,6 @@ namespace SlowSpeed
 
 			ForEachPrefab((VehicleInfo i) =>
 			{
-				ReplaceVehicleAI<PoliceCarAI, FastPoliceCarAI>(i);
-				ReplaceVehicleAI<FireTruckAI, FastFireTruckAI>(i);
-				ReplaceVehicleAI<AmbulanceAI, FastAmbulanceAI>(i);
-
 				switch (i.m_vehicleType)
 				{
 					case VehicleInfo.VehicleType.Car:
@@ -61,6 +57,13 @@ namespace SlowSpeed
 				var c = new SlowCitizenInfo(i);
 				citizens.Add(c);
 				c.Apply(0.25f);
+			});
+
+			ForEachPrefab((VehicleInfo i) =>
+			{
+				ReplaceVehicleAI<PoliceCarAI, FastPoliceCarAI>(i);
+				ReplaceVehicleAI<FireTruckAI, FastFireTruckAI>(i);
+				ReplaceVehicleAI<AmbulanceAI, FastAmbulanceAI>(i);
 			});
 		}
 
