@@ -143,7 +143,11 @@ namespace SlowSpeed
 		static void ForEachPrefab<T>(Action<T> f) where T : PrefabInfo
 		{
 			for (var i = 0u; i < PrefabCollection<T>.LoadedCount(); i++)
-				f(PrefabCollection<T>.GetLoaded(i));
+			{
+				var loaded = PrefabCollection<T>.GetLoaded(i);
+				if (loaded != null)
+					f(loaded);
+			}
 		}
 	}
 }
